@@ -10,7 +10,6 @@ import {
   useCallback,
 } from "react";
 import type { SlotItem, SlotMachineHandle, SlotMachineProps } from "./types";
-import { cn } from "./utils/cn";
 
 const DEFAULT_REEL_ITEMS = 35;
 const DEFAULT_FORCED_TARGET_INDEX = 30;
@@ -371,8 +370,12 @@ function SlotMachineInner<T extends SlotItem>(
       return (
         <div
           key={`item-${index}-${item.id ?? index}`}
-          className={cn("absolute flex items-center justify-center", itemClassName)}
+          className={itemClassName}
           style={{
+            position: "absolute",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
             width: itemSize,
             height: itemSize,
             minWidth: itemSize,
@@ -384,12 +387,16 @@ function SlotMachineInner<T extends SlotItem>(
             transform: isVertical
               ? `translate(${centerOffset}px, ${getItemPosition(index, Math.floor(items.length / 2)) + centerOffset}px)`
               : `translate(${getItemPosition(index, Math.floor(items.length / 2)) + centerOffset}px, ${centerOffset}px)`,
+            boxSizing: "border-box",
             ...itemStyle,
           }}
         >
           <div
-            className="relative flex items-center justify-center"
             style={{
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               width: "55%",
               height: "55%",
               transform: `scale(${scale})`,
@@ -401,9 +408,13 @@ function SlotMachineInner<T extends SlotItem>(
               alt={name}
               width={itemSize}
               height={itemSize}
-              className="object-contain"
               loading="eager"
-              style={{ width: itemSize, height: itemSize }}
+              style={{
+                width: itemSize,
+                height: itemSize,
+                objectFit: "contain",
+                display: "block",
+              }}
             />
           </div>
         </div>
@@ -428,35 +439,49 @@ function SlotMachineInner<T extends SlotItem>(
     overlayGradient !== "none" &&
     (overlayGradient ?? (isVertical ? "top-bottom" : "left-right"));
 
+  const rootStyle: React.CSSProperties = {
+    position: "relative",
+    width: "100%",
+    height: "100%",
+    minHeight: isVertical ? 300 : 120,
+    boxSizing: "border-box",
+    overflow: "hidden",
+    ...style,
+    containerType: "size",
+  };
+
   return (
     <div
       ref={wrapperRef}
-      className={cn(
-        "relative w-full h-full min-h-[120px]",
-        isVertical ? "min-h-[300px]" : "min-h-[120px]",
-        className
-      )}
-      style={{
-        ...style,
-        containerType: "size",
-      } as React.CSSProperties}
+      className={className}
+      style={rootStyle}
     >
       {showOverlay === "top-bottom" && (
         <>
           <div
-            className="absolute left-0 right-0 top-0 z-10 pointer-events-none"
             style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: 0,
               height: "30%",
               background:
                 "linear-gradient(to bottom, var(--slot-overlay-from, rgba(0,0,0,0.6)), transparent)",
+              zIndex: 10,
+              pointerEvents: "none",
             }}
           />
           <div
-            className="absolute left-0 right-0 bottom-0 z-10 pointer-events-none"
             style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              bottom: 0,
               height: "30%",
               background:
                 "linear-gradient(to top, var(--slot-overlay-from, rgba(0,0,0,0.6)), transparent)",
+              zIndex: 10,
+              pointerEvents: "none",
             }}
           />
         </>
@@ -464,19 +489,29 @@ function SlotMachineInner<T extends SlotItem>(
       {showOverlay === "left-right" && (
         <>
           <div
-            className="absolute top-0 bottom-0 left-0 z-10 pointer-events-none"
             style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              left: 0,
               width: "30%",
               background:
                 "linear-gradient(to right, var(--slot-overlay-from, rgba(0,0,0,0.6)), transparent)",
+              zIndex: 10,
+              pointerEvents: "none",
             }}
           />
           <div
-            className="absolute top-0 bottom-0 right-0 z-10 pointer-events-none"
             style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              right: 0,
               width: "30%",
               background:
                 "linear-gradient(to left, var(--slot-overlay-from, rgba(0,0,0,0.6)), transparent)",
+              zIndex: 10,
+              pointerEvents: "none",
             }}
           />
         </>
@@ -485,8 +520,10 @@ function SlotMachineInner<T extends SlotItem>(
       {items.length > 0 ? (
         <div
           ref={containerRef}
-          className="relative w-full h-full"
           style={{
+            position: "relative",
+            width: "100%",
+            height: "100%",
             transform: isVertical
               ? `translateY(${translateY}px)`
               : `translateX(${translateX}px)`,
@@ -505,8 +542,11 @@ function SlotMachineInner<T extends SlotItem>(
               return (
                 <div
                   key={`item-${index}-${item.id ?? index}`}
-                  className="absolute flex items-center justify-center"
                   style={{
+                    position: "absolute",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                     width: itemSize,
                     height: itemSize,
                     minWidth: itemSize,
@@ -530,7 +570,16 @@ function SlotMachineInner<T extends SlotItem>(
           })}
         </div>
       ) : (
-        <div className="flex items-center justify-center w-full h-full text-[color:var(--slot-empty-text,#888)]">
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+            height: "100%",
+            color: "var(--slot-empty-text, #888)",
+          }}
+        >
           <span>Loading items...</span>
         </div>
       )}

@@ -2,6 +2,8 @@
 
 A responsive, configurable React slot machine / reel component. Use one component per reel; combine multiple reels for a full slot grid. No external UI or state library required—bring your own items and styling.
 
+**Framework-agnostic:** All layout uses inline styles (no Tailwind or CSS required). Works in Vite, Next.js, CRA, or any React app. **Give the wrapper a defined size** (e.g. `height: 400px` or `width: 100%; height: 100%` inside a sized parent) so the reel centers and displays correctly.
+
 ## Install
 
 ```bash
